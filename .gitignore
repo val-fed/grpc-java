@@ -4,8 +4,10 @@
 /gradle
 /out
 
+.idea
 !/.idea
 /.idea/*
 !/.idea/codeStyles
 !/.idea/inspectionProfiles
 */**/.idea
+.idea
