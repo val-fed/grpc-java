@@ -1,13 +1,7 @@
 .gradle
 
-/build
-/gradle
-/out
+build
+gradle
+out
 
-.idea
-!/.idea
-/.idea/*
-!/.idea/codeStyles
-!/.idea/inspectionProfiles
-*/**/.idea
 .idea
