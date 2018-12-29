@@ -1,8 +1,6 @@
 package com.val_fed.grpc.greeting.client;
 
-import com.proto.dummy.DummyServiceGrpc;
-import com.proto.greet.GreetRequest;
-import com.proto.greet.GreetResponse;
+import com.proto.greet.GreetManyTimesRequest;
 import com.proto.greet.GreetServiceGrpc;
 import com.proto.greet.Greeting;
 import io.grpc.ManagedChannel;
@@ -21,10 +19,11 @@ public class GreetingClient {
     // create a greet service client (blocking - synchronous)
     GreetServiceGrpc.GreetServiceBlockingStub greetClient = GreetServiceGrpc.newBlockingStub(channel);
 
-
+// Unary
+    /*
     Greeting greeting = Greeting.newBuilder()
-        .setFirstName("Valerii")
-        .setLastName("Fedorenko")
+        .setFirstName("Val")
+        .setLastName("Fed")
         .build();
 
     GreetRequest greetRequest = GreetRequest.newBuilder()
@@ -35,6 +34,16 @@ public class GreetingClient {
     GreetResponse greetResponse = greetClient.greet(greetRequest);
 
     System.out.println(greetResponse.getResult());
+    */
+
+    // Server Streaming
+    GreetManyTimesRequest greetManyTimesRequest = GreetManyTimesRequest.newBuilder()
+        .setGreeting(Greeting.newBuilder().setFirstName("Valerii").build())
+        .build();
+
+    // stream the responses (in a blocking manner)
+    greetClient.greetManyTimes(greetManyTimesRequest)
+        .forEachRemaining(greetManyTimesResponse -> System.out.println(greetManyTimesResponse.getResult()));
 
     System.out.println("Shutting down channel");
     channel.shutdown();
