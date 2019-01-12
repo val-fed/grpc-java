@@ -1,14 +1,16 @@
 package com.val_fed.grpc.calculator.server;
 
+import com.proto.calculator.ComputeAverageRequest;
+import com.proto.calculator.ComputeAverageResponse;
 import com.proto.calculator.PrimeNumberDecompositionRequest;
 import com.proto.calculator.PrimeNumberDecompositionResponse;
 import com.proto.calculator.Sum;
 import com.proto.calculator.SumRequest;
 import com.proto.calculator.SumResponse;
-import com.proto.calculator.SumServiceGrpc;
+import com.proto.calculator.CalculatorServiceGrpc;
 import io.grpc.stub.StreamObserver;
 
-public class CalculatorServerImpl extends SumServiceGrpc.SumServiceImplBase {
+public class CalculatorServerImpl extends CalculatorServiceGrpc.CalculatorServiceImplBase {
   @Override
   public void sum(SumRequest request, StreamObserver<SumResponse> responseObserver) {
     Sum sum = request.getSum();
@@ -21,7 +23,6 @@ public class CalculatorServerImpl extends SumServiceGrpc.SumServiceImplBase {
         .build();
 
     responseObserver.onNext(response);
-
     responseObserver.onCompleted();
   }
 
@@ -42,5 +43,33 @@ public class CalculatorServerImpl extends SumServiceGrpc.SumServiceImplBase {
       }
     }
     responseObserver.onCompleted();
+  }
+
+  @Override
+  public StreamObserver<ComputeAverageRequest> computeAverage(StreamObserver<ComputeAverageResponse> responseObserver) {
+
+    return new StreamObserver<ComputeAverageRequest>() {
+      int sum = 0;
+      int count = 0;
+      @Override
+      public void onNext(ComputeAverageRequest value) {
+        sum += value.getNumber();
+        count++;
+      }
+
+      @Override
+      public void onError(Throwable t) {}
+
+      @Override
+      public void onCompleted() {
+        double average = (double) sum / count;
+        responseObserver.onNext(
+            ComputeAverageResponse.newBuilder()
+                .setAverage(average)
+                .build()
+        );
+        responseObserver.onCompleted();
+      }
+    };
   }
 }
